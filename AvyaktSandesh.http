@@ -1,0 +1,6 @@
+@AvyaktSandesh_HostAddress = http://localhost:5167
+
+GET {{AvyaktSandesh_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
