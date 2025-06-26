@@ -1,6 +1,8 @@
 ﻿using AvyaktSandesh.Data;
 using AvyaktSandesh.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace AvyaktSandesh.Controllers
 {
@@ -69,6 +71,19 @@ namespace AvyaktSandesh.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("by-article/{articleId}")]
+        public async Task<IActionResult> GetMediaByArticleId(int articleId)
+        {
+            var mediaFiles = await _context.MediaFiles
+                .Where(m => m.ArticleId == articleId)
+                .ToListAsync();
+
+            if (mediaFiles == null || mediaFiles.Count == 0)
+                return NotFound();
+
+            return Ok(mediaFiles);
         }
     }
 }
