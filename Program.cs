@@ -9,8 +9,24 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AvyaktSandesh.Data.AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<AvyaktSandesh.Data.AppDbContext>(options =>
+////options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//    options.UseMySql(
+//        builder.Configuration.GetConnectionString("DefaultConnection"),
+//        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+//    ));
+
+// Replace 'YourDbContext' with the name of your own DbContext derived class.
+builder.Services.AddDbContext<AvyaktSandesh.Data.AppDbContext>(
+    dbContextOptions => dbContextOptions
+        .UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")))
+// The following three options help with debugging, but should
+// be changed or removed for production.
+        .LogTo(Console.WriteLine, LogLevel.Information)
+        .EnableSensitiveDataLogging()
+        .EnableDetailedErrors()
+);
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);

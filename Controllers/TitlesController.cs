@@ -20,7 +20,7 @@ namespace AvyaktSandesh.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTitles()
         {
-            var titles = await _context.Titles.Include(t => t.Articles).ToListAsync();
+            var titles = await _context.Titles.ToListAsync(); //.Include(t => t.Articles)
             return Ok(titles);
         }
 
@@ -38,7 +38,8 @@ namespace AvyaktSandesh.Controllers
         {
             var title = new Titles
             {
-                Title = dto.Title
+                Title = dto.Title,
+                Language = dto.Language
                 // CreatedAt and Id will be set automatically
             };
             _context.Titles.Add(title);
@@ -46,33 +47,33 @@ namespace AvyaktSandesh.Controllers
             return CreatedAtAction(nameof(GetTitle), new { id = title.Id }, title);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTitle(int id, [FromBody] CreateTitleDto dto)
-        {
-            var title = await _context.Titles.FindAsync(id);
-            if (title == null)
-                return NotFound();
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateTitle(int id, [FromBody] CreateTitleDto dto)
+        //{
+        //    var title = await _context.Titles.FindAsync(id);
+        //    if (title == null)
+        //        return NotFound();
 
-            title.Title = dto.Title;
-            // Do not update CreatedAt to preserve original creation time
+        //    title.Title = dto.Title;
+        //    // Do not update CreatedAt to preserve original creation time
 
-            _context.Entry(title).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+        //    _context.Entry(title).State = EntityState.Modified;
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTitle(int id)
-        {
-            var title = await _context.Titles.FindAsync(id);
-            if (title == null)
-                return NotFound();
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteTitle(int id)
+        //{
+        //    var title = await _context.Titles.FindAsync(id);
+        //    if (title == null)
+        //        return NotFound();
 
-            _context.Titles.Remove(title);
-            await _context.SaveChangesAsync();
+        //    _context.Titles.Remove(title);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
     }
 }
