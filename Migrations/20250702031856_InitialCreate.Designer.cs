@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvyaktSandesh.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250625235324_InitialCreate")]
+    [Migration("20250702031856_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -47,6 +47,10 @@ namespace AvyaktSandesh.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<int>("TitleId")
                         .HasColumnType("int");
 
@@ -76,10 +80,6 @@ namespace AvyaktSandesh.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("longtext");
 
