@@ -44,6 +44,8 @@ namespace AvyaktSandesh.Migrations
                     Body = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ArticleDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Language = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     TitleId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -70,8 +72,6 @@ namespace AvyaktSandesh.Migrations
                     FilePath = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Caption = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Language = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ArticleId = table.Column<int>(type: "int", nullable: false)
