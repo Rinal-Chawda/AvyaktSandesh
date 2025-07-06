@@ -53,6 +53,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll"); // Enable CORS before routing
+app.UseStaticFiles(); // Required to serve files from wwwroot
 
 app.UseAuthorization();
 
