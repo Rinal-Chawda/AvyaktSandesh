@@ -18,9 +18,24 @@ namespace AvyaktSandesh.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTitles()
+        public async Task<IActionResult> GetTitles([FromQuery] string? language)
         {
-            var titles = await _context.Titles.ToListAsync(); //.Include(t => t.Articles)
+            var query = _context.Titles.Include(t => t.Articles)
+              .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(language))
+                query = query.Where(a => a.Language == language);
+
+            var titles = await query
+              .Select(a => new
+              {
+                 a.Id,
+                 a.Title,
+                 a.Language,
+                 Articlecount = a.Articles.Count,
+              })
+              .ToListAsync();
+
             return Ok(titles);
         }
 

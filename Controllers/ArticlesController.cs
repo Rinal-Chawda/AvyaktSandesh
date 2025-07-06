@@ -3,6 +3,7 @@ using AvyaktSandesh.Models;
 using AvyaktSandesh.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace AvyaktSandesh.Controllers
 {
@@ -25,7 +26,7 @@ namespace AvyaktSandesh.Controllers
         }
 
         [HttpGet("filter")]
-        public async Task<IActionResult> FilterArticles([FromQuery] string? language, [FromQuery] string? title, [FromQuery] int? year)
+        public async Task<IActionResult> FilterArticles([FromQuery] string? language, [FromQuery] string? title, [FromQuery] string? articleTitle, [FromQuery] int? year)
         {
             var query = _context.Articles
                 .Include(a => a.Title)
@@ -36,6 +37,10 @@ namespace AvyaktSandesh.Controllers
 
             if (!string.IsNullOrWhiteSpace(title))
                 query = query.Where(a => EF.Functions.Like(a.Title.Title, $"%{title}%"));
+
+            if (!string.IsNullOrWhiteSpace(articleTitle))
+                query = query.Where(a => EF.Functions.Like(a.ArticleTitle, $"%{articleTitle}%"));
+            
 
             if (year.HasValue)
                 query = query.Where(a => a.ArticleDate.Year == year.Value);
