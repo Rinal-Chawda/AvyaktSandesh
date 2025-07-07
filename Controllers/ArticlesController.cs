@@ -40,7 +40,7 @@ namespace AvyaktSandesh.Controllers
 
             if (!string.IsNullOrWhiteSpace(articleTitle))
                 query = query.Where(a => EF.Functions.Like(a.ArticleTitle, $"%{articleTitle}%"));
-            
+
 
             if (year.HasValue)
                 query = query.Where(a => a.ArticleDate.Year == year.Value);
@@ -77,32 +77,75 @@ namespace AvyaktSandesh.Controllers
             return CreatedAtAction(nameof(GetArticles), new { id = article.Id }, article);
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateArticle(int id, Articles updatedArticle)
-        //{
-        //    if (id != updatedArticle.Id)
-        //    {
-        //        return BadRequest("Article ID mismatch.");
-        //    }
 
-        //    var article = await _context.Articles.Include(a => a.MediaFiles).FirstOrDefaultAsync(a => a.Id == id);
-        //    if (article == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpGet("years")]
+        public async Task<IActionResult> GetArticlesByYear()
+        {
+            var articles = await _context.Articles.GroupBy(t => t.ArticleDate.Year)
+                .Select(g => new
+                {
+                    Year = g.Key,
+                    count = g.Count()
+                })
+              .ToListAsync();
 
-        //    // Update fields
-        //    article.ArticleTitle = updatedArticle.ArticleTitle;
-        //    article.Body = updatedArticle.Body;
-        //    article.TitleId = updatedArticle.TitleId;
-        //    // Do not update CreatedAt to preserve original creation time
 
-        //    // Optionally update MediaFiles if needed (not shown here)
+            return Ok(articles);
+        }
 
-        //    _context.Entry(article).State = EntityState.Modified;
-        //    await _context.SaveChangesAsync();
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetArticle(int id)
+        {
+            var article = await _context.Articles
+                .Where(a => a.Id == id)
+                .Select(a => new
+                {
+                    a.Id,
+                    a.ArticleTitle,
+                    a.Body,
+                    a.ArticleDate,
+                    mediaFiles = a.MediaFiles.Select(m => new
+                    {
+                        id = m.Id,
+                        type = m.Type,
+                        filePath = m.FilePath,
+                        caption = m.Caption,
+                    }).ToList()
 
-        //    return NoContent();
-        //}
+                }).FirstOrDefaultAsync();
+
+            if (article == null)
+                return NotFound();
+
+            return Ok(article);
+        }
     }
+    //[HttpPut("{id}")]
+    //public async Task<IActionResult> UpdateArticle(int id, Articles updatedArticle)
+    //{
+    //    if (id != updatedArticle.Id)
+    //    {
+    //        return BadRequest("Article ID mismatch.");
+    //    }
+
+    //    var article = await _context.Articles.Include(a => a.MediaFiles).FirstOrDefaultAsync(a => a.Id == id);
+    //    if (article == null)
+    //    {
+    //        return NotFound();
+    //    }
+
+    //    // Update fields
+    //    article.ArticleTitle = updatedArticle.ArticleTitle;
+    //    article.Body = updatedArticle.Body;
+    //    article.TitleId = updatedArticle.TitleId;
+    //    // Do not update CreatedAt to preserve original creation time
+
+    //    // Optionally update MediaFiles if needed (not shown here)
+
+    //    _context.Entry(article).State = EntityState.Modified;
+    //    await _context.SaveChangesAsync();
+
+    //    return NoContent();
+    //}
+
 }

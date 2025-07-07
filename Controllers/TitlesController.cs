@@ -29,10 +29,9 @@ namespace AvyaktSandesh.Controllers
             var titles = await query
               .Select(a => new
               {
-                 a.Id,
-                 a.Title,
-                 a.Language,
-                 Articlecount = a.Articles.Count,
+                  a.Id,
+                  a.Title,
+                  Articlecount = a.Articles.Count,
               })
               .ToListAsync();
 
@@ -42,9 +41,33 @@ namespace AvyaktSandesh.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTitle(int id)
         {
-            var title = await _context.Titles.Include(t => t.Articles).FirstOrDefaultAsync(t => t.Id == id);
+            //var title = await _context.Titles.Include(t => t.Articles).FirstOrDefaultAsync(t => t.Id == id);
+            var title = await _context.Titles
+                .Where(t => t.Id == id)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    title = t.Title,
+                    articles = t.Articles.Select(a => new
+                    {
+                        id = a.Id,
+                        articleTitle = a.ArticleTitle,
+                        articleDate = a.ArticleDate,
+                        titleId = a.TitleId,
+                        mediaFiles = a.MediaFiles.Select(m => new
+                        {
+                            id = m.Id,
+                            type = m.Type,
+                            filePath = m.FilePath,
+                            caption = m.Caption,
+                        }).FirstOrDefault()
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+
             if (title == null)
                 return NotFound();
+
             return Ok(title);
         }
 
