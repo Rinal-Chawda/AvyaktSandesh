@@ -77,6 +77,22 @@ namespace AvyaktSandesh.Controllers
             return CreatedAtAction(nameof(GetArticles), new { id = article.Id }, article);
         }
 
+
+        [HttpGet("years")]
+        public async Task<IActionResult> GetArticlesByYear()
+        {
+            var articles = await _context.Articles.GroupBy(t => t.ArticleDate.Year)
+                .Select(g => new
+                {
+                    Year = g.Key,
+                    count = g.Count()
+                })
+              .ToListAsync();
+
+
+            return Ok(articles);
+        }
+
         //[HttpPut("{id}")]
         //public async Task<IActionResult> UpdateArticle(int id, Articles updatedArticle)
         //{
